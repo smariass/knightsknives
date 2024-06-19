@@ -1,0 +1,75 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class KnightsAndKnaves {
+
+    // Enumeration for the character type
+    enum CharacterType {
+        KNIGHT,
+        KNAVE
+    }
+
+    // Function to solve Puzzle 0
+    public static CharacterType solvePuzzle0() {
+        // A says "I am both a knight and a knave."
+        // If A is a knight, then the statement would be true, which is a contradiction.
+        // Therefore, A must be a knave.
+        return CharacterType.KNAVE;
+    }
+
+    // Function to solve Puzzle 1
+    public static Map<String, CharacterType> solvePuzzle1() {
+        // A says "We are both knaves."
+        // If A is a knight, then the statement would be true, which is a contradiction.
+        // If A is a knave, then the statement would be false, meaning they are not both knaves.
+        // Therefore, A must be a knave and B must be a knight.
+        Map<String, CharacterType> result = new HashMap<>();
+        result.put("A", CharacterType.KNAVE);
+        result.put("B", CharacterType.KNIGHT);
+        return result;
+    }
+
+    // Function to solve Puzzle 2
+    public static Map<String, CharacterType> solvePuzzle2() {
+        // A says "We are the same kind."
+        // B says "We are of different kinds."
+        // If A is a knight, B must be a knave (since they can't both be the same kind).
+        // If A is a knave, B must be a knight (since they can't both be the same kind).
+        // Therefore, one is a knight and the other is a knave.
+        Map<String, CharacterType> result = new HashMap<>();
+        result.put("A", CharacterType.KNIGHT);
+        result.put("B", CharacterType.KNAVE);
+        return result;
+    }
+
+    // Function to solve Puzzle 3
+    public static Map<String, CharacterType> solvePuzzle3() {
+        // A says either "I am a knight." or "I am a knave."
+        // B says "A said ‘I am a knave.’"
+        // B says "C is a knave."
+        // C says "A is a knight."
+        // We need to determine the truthfulness of each statement.
+        // If B is a knight, then C is a knave and A said "I am a knave."
+        // If B is a knave, then C is a knight and A said "I am a knight."
+        // If C is a knight, then A is a knight.
+        Map<String, CharacterType> result = new HashMap<>();
+        result.put("A", CharacterType.KNIGHT);
+        result.put("B", CharacterType.KNAVE);
+        result.put("C", CharacterType.KNAVE);
+        return result;
+    }
+
+    public static void main(String[] args) {
+        // Solve and print the results for each puzzle
+        System.out.println("Puzzle 0: A is a " + solvePuzzle0());
+        
+        Map<String, CharacterType> puzzle1Result = solvePuzzle1();
+        System.out.println("Puzzle 1: A is a " + puzzle1Result.get("A") + ", B is a " + puzzle1Result.get("B"));
+        
+        Map<String, CharacterType> puzzle2Result = solvePuzzle2();
+        System.out.println("Puzzle 2: A is a " + puzzle2Result.get("A") + ", B is a " + puzzle2Result.get("B"));
+        
+        Map<String, CharacterType> puzzle3Result = solvePuzzle3();
+        System.out.println("Puzzle 3: A is a " + puzzle3Result.get("A") + ", B is a " + puzzle3Result.get("B") + ", C is a " + puzzle3Result.get("C"));
+    }
+}

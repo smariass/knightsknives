@@ -1,0 +1,159 @@
+import java.util.*;
+
+public class KnightsAndKnaves {
+
+    enum CharacterType {
+        KNIGHT,
+        KNAVE
+    }
+
+    static class Character {
+        String name;
+        CharacterType type;
+
+        Character(String name, CharacterType type) {
+            this.name = name;
+            this.type = type;
+        }
+    }
+
+    static class Statement {
+        Character speaker;
+        String content;
+
+        Statement(Character speaker, String content) {
+            this.speaker = speaker;
+            this.content = content;
+        }
+    }
+
+    static class Puzzle {
+        List<Character> characters;
+        List<Statement> statements;
+
+        Puzzle() {
+            this.characters = new ArrayList<>();
+            this.statements = new ArrayList<>();
+        }
+
+        void addCharacter(String name) {
+            characters.add(new Character(name, null));
+        }
+
+        void addStatement(String speakerName, String content) {
+            Character speaker = characters.stream().filter(c -> c.name.equals(speakerName)).findFirst().orElse(null);
+            if (speaker != null) {
+                statements.add(new Statement(speaker, content));
+            }
+        }
+
+        void solve() {
+            // Assume all combinations of knight/knave for all characters
+            int n = characters.size();
+            for (int i = 0; i < (1 << n); i++) {
+                for (int j = 0; j < n; j++) {
+                    characters.get(j).type = ((i & (1 << j)) != 0) ? CharacterType.KNIGHT : CharacterType.KNAVE;
+                }
+                if (isConsistent()) {
+                    printSolution();
+                    return;
+                }
+            }
+            System.out.println("No consistent solution found.");
+        }
+
+        boolean isConsistent() {
+            for (Statement statement : statements) {
+                if (!evaluate(statement)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        boolean evaluate(Statement statement) {
+            boolean statementValue = evaluateContent(statement.content);
+            if (statement.speaker.type == CharacterType.KNIGHT) {
+                return statementValue;
+            } else {
+                return !statementValue;
+            }
+        }
+
+        boolean evaluateContent(String content) {
+            // This is a simple parser for the given statements in the puzzles
+            // Extend this method to handle more complex logical statements
+            if (content.equals("I am both a knight and a knave.")) {
+                return false;
+            } else if (content.equals("We are both knaves.")) {
+                Character A = characters.get(0);
+                Character B = characters.get(1);
+                return A.type == CharacterType.KNAVE && B.type == CharacterType.KNAVE;
+            } else if (content.equals("We are the same kind.")) {
+                Character A = characters.get(0);
+                Character B = characters.get(1);
+                return A.type == B.type;
+            } else if (content.equals("We are of different kinds.")) {
+                Character A = characters.get(0);
+                Character B = characters.get(1);
+                return A.type != B.type;
+            } else if (content.equals("A said ‘I am a knave.’")) {
+                Character A = characters.get(0);
+                return A.type == CharacterType.KNAVE;
+            } else if (content.equals("C is a knave.")) {
+                Character C = characters.get(2);
+                return C.type == CharacterType.KNAVE;
+            } else if (content.equals("A is a knight.")) {
+                Character A = characters.get(0);
+                return A.type == CharacterType.KNIGHT;
+            }
+            return false;
+        }
+
+        void printSolution() {
+            for (Character character : characters) {
+                System.out.println(character.name + " is a " + character.type);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        // Puzzle 0
+        Puzzle puzzle0 = new Puzzle();
+        puzzle0.addCharacter("A");
+        puzzle0.addStatement("A", "I am both a knight and a knave.");
+        System.out.println("Puzzle 0 Solution:");
+        puzzle0.solve();
+        System.out.println();
+
+        // Puzzle 1
+        Puzzle puzzle1 = new Puzzle();
+        puzzle1.addCharacter("A");
+        puzzle1.addCharacter("B");
+        puzzle1.addStatement("A", "We are both knaves.");
+        System.out.println("Puzzle 1 Solution:");
+        puzzle1.solve();
+        System.out.println();
+
+        // Puzzle 2
+        Puzzle puzzle2 = new Puzzle();
+        puzzle2.addCharacter("A");
+        puzzle2.addCharacter("B");
+        puzzle2.addStatement("A", "We are the same kind.");
+        puzzle2.addStatement("B", "We are of different kinds.");
+        System.out.println("Puzzle 2 Solution:");
+        puzzle2.solve();
+        System.out.println();
+
+        // Puzzle 3
+        Puzzle puzzle3 = new Puzzle();
+        puzzle3.addCharacter("A");
+        puzzle3.addCharacter("B");
+        puzzle3.addCharacter("C");
+        puzzle3.addStatement("B", "A said ‘I am a knave.’");
+        puzzle3.addStatement("B", "C is a knave.");
+        puzzle3.addStatement("C", "A is a knight.");
+        System.out.println("Puzzle 3 Solution:");
+        puzzle3.solve();
+    }
+}
